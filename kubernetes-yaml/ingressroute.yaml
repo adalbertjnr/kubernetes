@@ -1,0 +1,33 @@
+#traefik dashboard
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dashboard
+  namespace: traefik-system
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`traefik.szanetwork.com`)
+      kind: Rule
+      services:
+        - name: api@internal
+          kind: TraefikService
+
+#api
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: api-ingressroute
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`app.szanetwork.com`) #&& (PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: api-svc
+          port: 80

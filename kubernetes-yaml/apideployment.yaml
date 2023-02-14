@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+spec:
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api-depl
+          image: szadhub/pedelogo:1.0
+          resources:
+            requests:
+              memory: "48Mi"
+              cpu: "150m"
+            limits:
+              memory: "250Mi"
+              cpu: "500m"        
+          ports:
+            - containerPort: 80
+              name: "http"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+          readinessProbe:
+            httpGet:
+              path: /read
+              port: 80
+          envFrom:
+            - configMapRef:
+                name: api-cfg-map
+          env:
+            - name: Mongo__User
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: db_user
+            - name: Mongo__Password
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: db_pass
+
+
+
+
+
+              
