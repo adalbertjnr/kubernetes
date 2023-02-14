@@ -31,3 +31,5 @@ spec:
       services:
         - name: api-svc
           port: 80
+  tls:
+    secretName: sza-secret
